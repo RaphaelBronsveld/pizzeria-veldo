@@ -1,4 +1,4 @@
-import { Pizza } from "lucide-react";
+import { MenuIcon, Pizza } from "lucide-react";
 import Link from "next/link";
 
 type NavItem = {
@@ -23,9 +23,10 @@ export function Header() {
             <Link
               key={`navitem-${navItem.label}`}
               href={navItem.href}
-              className="p-1 text-red-900 hover:text-red-700"
+              className="flex gap-1 p-1 pr-0 text-red-900 hover:text-red-700"
             >
               {navItem.label}
+              <MenuIcon />
             </Link>
           );
         })}
