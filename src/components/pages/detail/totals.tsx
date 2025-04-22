@@ -1,4 +1,5 @@
 import { usePizza } from "@/components/pages/detail/pizza-provider";
+import { Topping } from "@/types/pizza";
 
 export function Totals() {
   const { size, pizza, toppings, selectedToppings } = usePizza();
@@ -31,7 +32,7 @@ export function Totals() {
                       // Get the selected topping objects
                       const selectedToppingObjects = selectedToppings
                         .map((id) => toppings.find((t) => t.id === id))
-                        .filter(Boolean);
+                        .filter(Boolean) as Topping[];
 
                       // Sort by price
                       const sortedToppings = [...selectedToppingObjects].sort(
