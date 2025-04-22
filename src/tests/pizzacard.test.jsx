@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { PizzaCard } from "../components/pizza-card";
+import { PizzaCard } from "../components/pages/list/pizza-card";
 
 const pizza = {
   id: 1,
