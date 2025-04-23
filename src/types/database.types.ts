@@ -15,21 +15,71 @@ export type Database = {
           id: string
           name: string | null
           price: number
-          sku: string | null
+          sku: string
         }
         Insert: {
           created_at?: string
           id?: string
           name?: string | null
           price: number
-          sku?: string | null
+          sku: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string | null
           price?: number
-          sku?: string | null
+          sku?: string
+        }
+        Relationships: []
+      }
+      order_item: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          sku: string
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          sku: string
+          total: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          sku?: string
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_item_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          grand_total: number
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          grand_total: number
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          grand_total?: number
+          id?: string
         }
         Relationships: []
       }
@@ -41,7 +91,7 @@ export type Database = {
           image: string | null
           name: string | null
           price: number
-          sku: string | null
+          sku: string
         }
         Insert: {
           created_at?: string
@@ -50,7 +100,7 @@ export type Database = {
           image?: string | null
           name?: string | null
           price: number
-          sku?: string | null
+          sku: string
         }
         Update: {
           created_at?: string
@@ -59,7 +109,7 @@ export type Database = {
           image?: string | null
           name?: string | null
           price?: number
-          sku?: string | null
+          sku?: string
         }
         Relationships: []
       }
@@ -69,21 +119,21 @@ export type Database = {
           id: string
           name: string | null
           price: number
-          sku: string | null
+          sku: string
         }
         Insert: {
           created_at?: string
           id?: string
           name?: string | null
           price: number
-          sku?: string | null
+          sku: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string | null
           price?: number
-          sku?: string | null
+          sku?: string
         }
         Relationships: []
       }

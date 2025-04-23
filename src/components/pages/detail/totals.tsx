@@ -1,8 +1,23 @@
 import { usePizza } from "@/components/pages/detail/pizza-provider";
+import { calculateTotals } from "@/lib/pricing";
 import { Topping } from "@/types/pizza";
 
 export function Totals() {
-  const { size, pizza, toppings, selectedToppings } = usePizza();
+  const { size, pizza, toppings, drinks, selectedToppings, selectedDrink } =
+    usePizza();
+
+  const selectedToppingObjects = selectedToppings.map((topping) => {
+    return toppings.find((t) => t.id === topping);
+  }) as Topping[];
+  const activeDrink = drinks.find((d) => d.id === selectedDrink);
+
+  const { totals, metadata } = calculateTotals({
+    pizza,
+    size,
+    toppings: selectedToppingObjects,
+    drink: activeDrink,
+  });
+
   return (
     <div className="pt-4 border-t">
       <h2 className="text-lg font-semibold mb-3">Totals</h2>
@@ -11,14 +26,7 @@ export function Totals() {
           <span>
             Pizza {pizza.name} ({size}):
           </span>
-          <span>
-            $
-            {size === "small"
-              ? (pizza.price - 2).toFixed(2)
-              : size === "large"
-                ? (pizza.price + 3).toFixed(2)
-                : pizza.price.toFixed(2)}
-          </span>
+          <span>${totals.price}</span>
         </div>
 
         {selectedToppings.length > 0 && (
@@ -27,50 +35,31 @@ export function Totals() {
               <span>Toppings:</span>
               <span>
                 {selectedToppings.length <= 3
-                  ? "FREE (3 free toppings promotion)"
+                  ? "Free (first 3 cheapest are free)"
                   : (() => {
-                      // Get the selected topping objects
-                      const selectedToppingObjects = selectedToppings
-                        .map((id) => toppings.find((t) => t.id === id))
-                        .filter(Boolean) as Topping[];
-
-                      // Sort by price
-                      const sortedToppings = [...selectedToppingObjects].sort(
-                        (a, b) => a.price - b.price
-                      );
-
-                      // Only charge for toppings beyond the first 3 cheapest
-                      const paidToppings = sortedToppings.slice(3);
-                      const toppingsPrice = paidToppings.reduce(
-                        (sum, topping) => sum + topping.price,
-                        0
-                      );
-
-                      return `$${toppingsPrice.toFixed(2)} (3 free + ${paidToppings.length} paid)`;
+                      return `$${totals.toppingsTotal} (3 free + ${metadata.toppingsTotal?.paid.length} paid)`;
                     })()}
               </span>
             </div>
           </div>
         )}
 
-        {/*{selectedDrink !== "none" && (
+        {selectedDrink !== "none" && (
           <div className="flex justify-between">
             <span>
-              Drink ({drinks.find((d) => d.id === selectedDrink)?.name}
+              Drink ({activeDrink?.name}
               ):
             </span>
-            <span>
-              ${drinks.find((d) => d.id === selectedDrink)?.price.toFixed(2)}
-            </span>
+            <span>${totals.drinkTotal}</span>
           </div>
         )}
-      </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-lg font-semibold">Total Price:</span>
-        <span className="text-2xl font-bold text-red-700">
-          ${totalPrice.toFixed(2)}
-        </span> */}
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-semibold">Grand Total:</span>
+          <span className="text-2xl font-bold text-red-700">
+            ${totals.grandTotal}
+          </span>
+        </div>
       </div>
     </div>
   );

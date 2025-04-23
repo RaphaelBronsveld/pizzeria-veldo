@@ -2,6 +2,7 @@
 import { usePizza } from "@/components/pages/detail/pizza-provider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { calculateToppingPricing } from "@/lib/pricing";
 import { Topping } from "@/types/pizza";
 
 export function PizzaToppingSelector() {
@@ -21,14 +22,8 @@ export function PizzaToppingSelector() {
     .map((id) => toppings.find((t) => t.id === id))
     .filter(Boolean) as Topping[];
 
-  let sortedToppings = [...selectedToppingObjects].sort(
-    (a, b) => a.price - b.price
-  );
-
-  const paidToppings = sortedToppings.slice(3);
-  const toppingsPrice = paidToppings.reduce(
-    (sum, topping) => sum + topping.price,
-    0
+  const { free: freeToppings } = calculateToppingPricing(
+    selectedToppingObjects
   );
 
   return (
@@ -41,23 +36,9 @@ export function PizzaToppingSelector() {
       </div>
       <div className="grid grid-cols-2 gap-2">
         {toppings.map((topping) => {
-          // Determine if this topping would be free based on current selections
-          let isFree = false;
-          if (selectedToppings.includes(topping.id)) {
-            // Get all selected toppings
-            const selectedToppingObjects = sortedToppings
-              .map((topping) => toppings.find((t) => t.id === topping.id))
-              .filter(Boolean) as Topping[];
-
-            // Sort by price
-            sortedToppings = [...selectedToppingObjects].sort(
-              (a, b) => a.price - b.price
-            );
-
-            // Check if this topping is among the 3 cheapest
-            const cheapestThree = sortedToppings.slice(0, 3);
-            isFree = cheapestThree.some((t) => t.id === topping.id);
-          }
+          const isSelected = selectedToppings.includes(topping.id);
+          const isFree =
+            isSelected && freeToppings.some((t) => t.id === topping.id);
 
           return (
             <div key={topping.id} className="flex items-center space-x-2 h-5">
@@ -84,7 +65,6 @@ export function PizzaToppingSelector() {
           );
         })}
       </div>
-      <div>{toppingsPrice}</div>
     </div>
   );
 }

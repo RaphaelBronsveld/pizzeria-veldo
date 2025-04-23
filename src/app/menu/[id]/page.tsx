@@ -2,11 +2,16 @@ import { cache } from "react";
 import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { cn } from "../../../lib/utils";
 import { PizzaConfigurator } from "@/components/pages/detail/configurator";
 import { PizzaProvider } from "@/components/pages/detail/pizza-provider";
+import {
+  getPizza as getSupabasePizza,
+  getDrinks,
+  getToppings,
+} from "@/utils/supabase/services/query-data";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -23,9 +28,18 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function PizzaDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const pizza = await getPizza({ id });
-  const toppings = await getToppings();
-  const drinks = await getDrinks();
+  let pizza, toppings, drinks;
+
+  try {
+    [pizza, toppings, drinks] = await Promise.all([
+      getPizza({ id }),
+      getToppings(),
+      getDrinks(),
+    ]);
+  } catch (e) {
+    console.error(e);
+    return notFound();
+  }
 
   return (
     <div className="pb-12">
@@ -65,36 +79,5 @@ export default async function PizzaDetailPage({ params }: PageProps) {
 }
 
 const getPizza = cache(async ({ id }: { id: string }) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("pizzas")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-});
-
-const getToppings = cache(async () => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("toppings").select("*");
-
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data;
-});
-
-const getDrinks = cache(async () => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("drinks").select("*");
-
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data;
+  return getSupabasePizza({ id });
 });

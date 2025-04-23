@@ -1,4 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
+import { ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -17,16 +18,9 @@ export default function HomePage() {
           <Link
             href="/menu"
             className={buttonVariants({ variant: "default", size: "lg" })}
-            // className="w-full sm:w-auto bg-red-700 hover:bg-red-800 text-white px-8 py-6 text-lg"
           >
+            <ShoppingBagIcon />
             Order Online
-          </Link>
-          <Link
-            href="/menu"
-            className={buttonVariants({ variant: "outline", size: "lg" })}
-            // className="w-full sm:w-auto border-red-700 text-red-700 hover:bg-red-50 px-8 py-6 text-lg"
-          >
-            Pickup
           </Link>
         </div>
       </div>

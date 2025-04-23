@@ -1,6 +1,6 @@
 import { PizzaCard } from "@/components/pages/list/pizza-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { createClient } from "@/utils/supabase/server";
+import { getPizzas } from "@/utils/supabase/services/query-data";
 import { Suspense } from "react";
 
 export async function generateMetadata() {
@@ -9,6 +9,7 @@ export async function generateMetadata() {
     description: "Something describing the menu page.",
   };
 }
+
 export default async function MenuPage() {
   return (
     <div className="flex flex-col gap-8 pb-8">
@@ -62,19 +63,4 @@ async function PizzaMenu() {
       ))}
     </>
   );
-}
-
-/**
- * Fetch pizza's from Supabase.
- * Types are inferred from the createClient function.
- */
-async function getPizzas() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("pizzas").select("*");
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
 }

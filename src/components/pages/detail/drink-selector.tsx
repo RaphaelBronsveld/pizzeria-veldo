@@ -8,13 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 
 export function DrinkSelector() {
-  const { drinks } = usePizza();
-  const [selectedDrink, setSelectedDrink] = useState("none");
-  // const drink = drinks.find((d) => d.id === selectedDrink);
-  // const drinkPrice = drink ? drink.price : 0;
+  const { drinks, selectedDrink, setSelectedDrink } = usePizza();
 
   return (
     <div>

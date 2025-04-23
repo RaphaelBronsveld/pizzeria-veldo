@@ -6,13 +6,15 @@ import { PizzaSizeSelector } from "@/components/pages/detail/size-selector";
 import { PizzaToppingSelector } from "@/components/pages/detail/topping-selector";
 import { Totals } from "@/components/pages/detail/totals";
 import { Button } from "@/components/ui/button";
-import { placeOrder } from "@/utils/server/actions/place-order";
+import { placeOrder } from "@/utils/supabase/actions/place-order";
 import { Loader, ShoppingCartIcon } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 export function PizzaConfigurator() {
   const { pizza, size } = usePizza();
   const [isPending, startTransition] = useTransition();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,8 +32,15 @@ export function PizzaConfigurator() {
           drinkId,
           size,
         });
+        setDialogOpen(true);
       } catch (e) {
-        console.error("Error placing order: ", e);
+        if (e instanceof Error) {
+          setError(e.message);
+          console.error("Error placing order:", e);
+        } else {
+          setError("Something went wrong");
+          console.error("Unknown error:", e);
+        }
       }
     });
   };
@@ -57,8 +66,54 @@ export function PizzaConfigurator() {
             </>
           )}
         </Button>
+        {error ? <>{error}</> : null}
         <Totals />
+
+        <Alert
+          message={
+            "Tada! You successfully placed an order. Now.. the question remains, will your order actually be fulfilled?"
+          }
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
       </div>
     </form>
+  );
+}
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+/** Ideally you would do this in a context provider.. */
+function Alert({
+  message,
+  open,
+  onOpenChange,
+}: {
+  message: string;
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+}) {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Bellissimo!</AlertDialogTitle>
+          <AlertDialogDescription>{message}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction onClick={() => onOpenChange(false)}>
+            I&apos;ll find out
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

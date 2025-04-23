@@ -19,7 +19,7 @@ export function PizzaSizeSelector() {
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="small" id="size-small" />
           <Label htmlFor="size-small">
-            Small (10&quot;) - ${(pizza.price - 2).toFixed(2)}
+            Small (10&quot;) - ${(pizza.price - 1).toFixed(2)}
           </Label>
         </div>
         <div className="flex items-center space-x-2">
@@ -31,7 +31,7 @@ export function PizzaSizeSelector() {
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="large" id="size-large" />
           <Label htmlFor="size-large">
-            Large (14&quot;) - ${(pizza.price + 3).toFixed(2)}
+            Large (14&quot;) - ${(pizza.price + 1).toFixed(2)}
           </Label>
         </div>
       </RadioGroup>

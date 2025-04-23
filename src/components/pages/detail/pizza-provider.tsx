@@ -5,10 +5,15 @@ import { createContext, useContext, useState } from "react";
 type PizzaContext =
   | {
       pizza: Pizza;
+      /** Toppings */
       toppings: Topping[];
       selectedToppings: string[];
       setSelectedToppings: React.Dispatch<React.SetStateAction<string[]>>;
+      /** Drinks */
       drinks: Drink[];
+      selectedDrink: string;
+      setSelectedDrink: React.Dispatch<React.SetStateAction<string>>;
+      /** Pizza size */
       size: PizzaSizes;
       setSize: React.Dispatch<React.SetStateAction<PizzaSizes>>;
     }
@@ -34,6 +39,7 @@ export function PizzaProvider({
 }) {
   const [size, setSize] = useState<PizzaSizes>("medium");
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+  const [selectedDrink, setSelectedDrink] = useState<string>("none");
 
   return (
     <PizzaContext.Provider
@@ -41,6 +47,8 @@ export function PizzaProvider({
         pizza,
         toppings,
         drinks,
+        selectedDrink,
+        setSelectedDrink,
         size,
         setSize,
         selectedToppings,
