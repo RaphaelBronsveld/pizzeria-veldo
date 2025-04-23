@@ -24,6 +24,11 @@ Install the dependencies:
 npm install
 ```
 
+### Set-up (db)
+
+> [!WARNING]  
+> No migrations + seeds generated yet(!). If you really want to set this project up you'd need to create these yourself.
+
 Copy .env.local to set-up Supabase.
 
 `cp .env.example .env.local`
